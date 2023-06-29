@@ -1,11 +1,25 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using SistemaUsuarios.Models;
 using SistemaUsuarios.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
+//Agrega politica de autenticación a nivel de toda la aplicación para no tener que ir agregando [Authorize] en los controladores.
+//Depende de los requerimientos de la aplicación.
+//Agregar excepción [AllowAnonymous] en los que SI queremos que se vea 
+var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
+
+builder.Services.AddControllersWithViews(opciones =>
+{
+    opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
+});
+
 builder.Services.AddTransient<IRepositorioUsuarios, RepositorioUsuarios>();
 builder.Services.AddTransient<IUserStore<Usuario>, UsuarioStore>();
 builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
@@ -28,8 +42,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
     options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
-}).AddCookie(IdentityConstants.ApplicationScheme);
-
+}).AddCookie(IdentityConstants.ApplicationScheme, opciones =>
+{
+    opciones.LoginPath = "/usuarios/login";
+});
+//Redirigir al login de nuestra página no la que trae por defect 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

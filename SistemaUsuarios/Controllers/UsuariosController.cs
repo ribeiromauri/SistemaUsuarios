@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SistemaUsuarios.Models;
@@ -15,10 +16,12 @@ namespace SistemaUsuarios.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
+        [AllowAnonymous]
         public IActionResult Registro()
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Registro(RegistroViewModel modelo)
         {
@@ -45,19 +48,21 @@ namespace SistemaUsuarios.Controllers
 
                 return View(modelo);
             }
-        }
+        }        
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
         }
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel modelo)
         {
