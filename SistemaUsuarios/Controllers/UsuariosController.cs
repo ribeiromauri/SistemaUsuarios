@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SistemaUsuarios.Models;
 
@@ -44,6 +45,12 @@ namespace SistemaUsuarios.Controllers
 
                 return View(modelo);
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            return RedirectToAction("Index", "Home");
         }
     }
 }
