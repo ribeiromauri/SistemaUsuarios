@@ -24,7 +24,11 @@ namespace SistemaUsuarios.Servicios
                         VALUES (@Email, @EmailNormalizado, @PasswordHash);
                         SELECT SCOPE_IDENTITY();
                         ", usuario);
-
+            /*
+             * Acá se podría agregar data por default cuando se registra un usuario nuevo para mejorar
+             la experiencia por ej. a través de un stored procedure que cuando se registre un usuario
+             haga un insert de varios registros para mostrar luego en el inicio
+            */
             return usuarioId;
         }
 
