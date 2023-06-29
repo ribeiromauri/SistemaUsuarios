@@ -52,5 +52,32 @@ namespace SistemaUsuarios.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
         }
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel modelo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(modelo);
+            }
+            //Lockout impedir tras varios intentos de login
+            var resultado = await signInManager.PasswordSignInAsync(modelo.Email,
+                modelo.Password, modelo.Recuerdame, lockoutOnFailure: false);
+
+            if (resultado.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Nombre de usuario o password incorrecto.");
+                return View(modelo);
+            }
+        }
     }
 }
