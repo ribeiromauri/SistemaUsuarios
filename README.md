@@ -5,7 +5,7 @@
 #### Características
 - Registro de usuarios: Los usuarios pueden crear una cuenta proporcionando información básica como nombre de usuario, correo electrónico y contraseña.
 - Inicio de sesión: Los usuarios registrados pueden iniciar sesión utilizando su nombre de usuario y contraseña.
-- Autorización: El sistema implementa un sistema de roles para gestionar los permisos de acceso a las diferentes partes del sistema. Se pueden asignar roles a los usuarios y restringir el acceso a ciertas funcionalidades según el rol.
+- Autorización: El sistema gestiona la visibilidad del contenido que se muestra a cada usuario.
 - Autenticación: El sistema utiliza cookies para mantener la sesión del usuario y permitir el acceso a las áreas autorizadas.
 - Base de datos: Se utiliza SQL Server como base de datos para almacenar a los usuarios.
 - Consultas con Dapper: utiliza Dapper para facilitar la ejecución de consultas SQL y mapear los resultados a objetos en C#.
