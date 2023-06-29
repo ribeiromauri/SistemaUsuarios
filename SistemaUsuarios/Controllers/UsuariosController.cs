@@ -7,10 +7,12 @@ namespace SistemaUsuarios.Controllers
     public class UsuariosController : Controller
     {
         private readonly UserManager<Usuario> userManager;
+        private readonly SignInManager<Usuario> signInManager;
 
-        public UsuariosController(UserManager<Usuario> userManager)
+        public UsuariosController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         public IActionResult Registro()
         {
@@ -28,7 +30,9 @@ namespace SistemaUsuarios.Controllers
             var resultado = await userManager.CreateAsync(usuario, password: modelo.Password);
 
             if (resultado.Succeeded)
-            {                
+            {
+                //Si se cierra el navegador va seguir guardando la cookie con isPersistent: true 
+                await signInManager.SignInAsync(usuario, isPersistent: true);
                 return RedirectToAction("Index", "Home");
             }
             else

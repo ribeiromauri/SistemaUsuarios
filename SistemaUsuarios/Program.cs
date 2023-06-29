@@ -8,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IRepositorioUsuarios, RepositorioUsuarios>();
 builder.Services.AddTransient<IUserStore<Usuario>, UsuarioStore>();
+builder.Services.AddTransient<SignInManager<Usuario>>();
+
+builder.Services.AddHttpContextAccessor();
+
+//Las "opciones" se pueden quitar, todas están en false para facilitar pruebas 
 builder.Services.AddIdentityCore<Usuario>(opciones =>
 {
     opciones.Password.RequireDigit = false;
@@ -16,6 +21,13 @@ builder.Services.AddIdentityCore<Usuario>(opciones =>
     opciones.Password.RequireNonAlphanumeric = false;
 }).AddErrorDescriber<MensajesDeErrorIdentity>();
 
+//Configuracion para que nuestra app entienda el uso de cookies para autenticación 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
+}).AddCookie(IdentityConstants.ApplicationScheme);
 
 var app = builder.Build();
 
@@ -31,6 +43,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+//Agregar despues del SignIn
+app.UseAuthentication();
 
 app.UseAuthorization();
 
